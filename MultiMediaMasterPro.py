@@ -243,7 +243,7 @@ if __name__ == "__main__":
         'm4b', 'm4p', 'mp3', 'ogg', 'oga', 'mogg', 'opus', 'ra', 'wav', 'wma', 'webm'
     )
     image_extensions = (
-        'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp', 'gif', 'webp', 'svg', 'ico'
+        'jpg', 'jpeg', 'png', 'tiff', 'tif', 'bmp', 'gif', 'webp', 'ico'
     )
     video_extensions = ('mp4', 'avi', 'mkv', 'mov', 'nix', 'org')
     
