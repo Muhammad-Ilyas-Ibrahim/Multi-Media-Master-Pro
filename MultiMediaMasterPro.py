@@ -250,9 +250,10 @@ if __name__ == "__main__":
     while True:
         os.system("cls")
         os.system("color 0a")
-        print(" ============================================")
-        print("                     Menu                    ")
-        print(" ============================================")
+        print(" =============================================")
+        print("                    Features                   ")
+        print(" =============================================")
+
         print(" [1] Compress a video")
         print(" [2] Compress a directory of videos")
         print(" [3] Record Screen without audio")
