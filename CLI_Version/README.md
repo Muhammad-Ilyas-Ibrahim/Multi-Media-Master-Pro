@@ -1,6 +1,6 @@
-# <center> MediaMaster Pro </center>
+# <center> Multi-Media-Master-Pro </center>
 
-**MediaMaster Pro** is a versatile media processing tool that offers a range of functionalities including video compression, screen recording, audio extraction, and media format conversion. It's designed to simplify and enhance your media management tasks, all within a user-friendly interface.
+**Multi-Media-Master-Pro** is a versatile media processing tool that offers a range of functionalities including video compression, screen recording, audio extraction, and media format conversion. It's designed to simplify and enhance your media management tasks, all within a user-friendly interface.
 
 ---
 
@@ -32,15 +32,15 @@ Convert image files from one format to another, supporting formats like JPG, PNG
 
 1. **Clone the Repository:**
     ```bash
-    git clone https://github.com/Muhammad-Ilyas-Ibrahim/MediaMaster-Pro.git
-    cd MediaMaster-Pro
+    git clone https://github.com/Muhammad-Ilyas-Ibrahim/Multi-Media-Master-Pro.git
+    cd Multi-Media-Master-Pro
     ```
 
 ## Usage
 
 1. ### **Run the Script:**
     ```bash
-    python MediaMasterPro.py
+    python MultiMediaMasterPro.py
     ```
 
 2. ### **How to Use**

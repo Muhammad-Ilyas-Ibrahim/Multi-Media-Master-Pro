@@ -1,0 +1,15 @@
+# Binary files
+Releases/
+EXE/
+
+
+# cache files
+__pycache__/
+*.pyc
+
+# batch files
+*.bat
+
+GUI_Version/ 
+readme_md.md 
+
