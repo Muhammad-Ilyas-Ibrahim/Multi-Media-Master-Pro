@@ -1,15 +1,8 @@
-try:
-    import os
-    import csv
-    import time
-    import subprocess
-    from datetime import datetime
-except:
-    import os
-    import subprocess
-    import csv
-    import time
-    from datetime import datetime
+import os
+import csv
+import time
+import subprocess
+from datetime import datetime
 
 
 def get_file_size(file_path):
@@ -103,12 +96,12 @@ def compress_videos(input_path, output_path, given_extension=None, compression_l
 
     if any_error:
         return
-    print(f" All videos compressed and exported to {output_directory}")
+    print(f" All videos compressed and exported to {output_path}")
     print(f" Compression data written to {csv_file_path}")
     
-    base_dir, last_dir = os.path.split(output_directory)
+    base_dir, last_dir = os.path.split(output_path)
     if str(last_dir).upper() != "DESKTOP":
-        os.system(f"explorer {output_directory}")
+        os.system(f"explorer {output_path}")
         
         
 def compress_video():
@@ -136,6 +129,8 @@ def compress_video():
     
     try:
         compression_choice = int(input(" Choose compression level (1-3): ").strip())
+        if compression_choice not in [1, 2, 3]:
+             raise ValueError
     except ValueError:
         print(" Invalid input! Using medium bitrate compression by default.")
         compression_choice = 2
@@ -244,40 +239,82 @@ def record_screen():
     try:
         os.system(f"ffmpeg.exe -f gdigrab -i desktop -c:v libx264 -crf 25 -pix_fmt yuv420p {output_path}")
     except OSError:
-        print(" Screen Recording Ended!")
-        return
+        pass
+    print(" Screen Recording Ended!")
     
     
 def extract_audio():
 
-    # Prompt the user for the input video file
-    input_path = input(" Enter the path to the input video file: ").strip()
+    # Prompt for input path (file or directory)
+    input_path = input(" Enter the path to the input file or directory: ").strip().strip('"')
 
-    # Remove quotes from the input path if present
-    input_path = input_path.strip('"')
-
-    # Check if the input file exists
     if not os.path.exists(input_path):
-        print(" The specified input file does not exist.")
+        print(" The specified path does not exist.")
         return
 
-    # Get the file name and directory of the input video
-    input_dir, input_name = os.path.split(input_path)
-    input_name, input_extension = os.path.splitext(input_name)
+    # Ask for Single or Directory
+    mode = input(" Single File or Directory of Videos (s/d): ").lower().strip()
 
-    
-    output_name = f"{input_name}.mp3"
-    output_path = os.path.join(input_dir, output_name)
-    start_time = time.time()
-    # Compress the video using FFmpeg
-    try:
-        subprocess.run(["ffmpeg.exe", "-i", input_path, "-q:a", "0", "-map", "a", output_path], check=True)
-    except subprocess.CalledProcessError:
-        print(" Audio Extraction failed.")
-        return
-    
-    print("\n Audio Extracted successfully. Output file:", output_path)
-    print(f" Time Taken: {(time.time() - start_time):.2f} seconds")    
+    if mode == 's':
+        if not os.path.isfile(input_path):
+            print(" Path is not a file!")
+            return
+            
+        # Get the file name and directory of the input video
+        input_dir, input_name = os.path.split(input_path)
+        input_name, _ = os.path.splitext(input_name)
+        
+        output_name = f"{input_name}.mp3"
+        output_path = os.path.join(input_dir, output_name)
+        
+        start_time = time.time()
+        try:
+            subprocess.run(["ffmpeg.exe", "-i", input_path, "-q:a", "0", "-map", "a", "-y", output_path], check=True)
+            print(f"\n Audio Extracted successfully. Output file: {output_path}")
+        except subprocess.CalledProcessError:
+            print(" Audio Extraction failed.")
+            return
+        
+        print(f" Time Taken: {(time.time() - start_time):.2f} seconds")
+
+    elif mode == 'd':
+        if not os.path.isdir(input_path):
+            print(" Path is not a directory!")
+            return
+
+        output_directory = input_path + "_audio"
+        os.makedirs(output_directory, exist_ok=True)
+        
+        # Access global video extensions if needed, assuming they're available
+        global video_extensions
+        files = [f for f in os.listdir(input_path) if f.lower().endswith(video_extensions)]
+        
+        if not files:
+            print(" No video files found in the directory.")
+            return
+            
+        start_time = time.time()
+        print(f" Found {len(files)} video files. Starting extraction...")
+        
+        for video_file in files:
+            input_file_path = os.path.join(input_path, video_file)
+            filename, _ = os.path.splitext(video_file)
+            output_file_path = os.path.join(output_directory, f"{filename}.mp3")
+            
+            try:
+                subprocess.run(["ffmpeg.exe", "-i", input_file_path, "-q:a", "0", "-map", "a", "-y", output_file_path], check=True)
+                print(f" Extracted: {video_file}")
+            except subprocess.CalledProcessError:
+                print(f" Failed to extract: {video_file}")
+                
+        print(f" \n All operations completed. Output directory: {output_directory}")
+        print(f" Time Taken: {(time.time() - start_time):.2f} seconds")
+        
+        if os.name == 'nt':
+             os.system(f"explorer {output_directory}")
+
+    else:
+        print(" Invalid choice!")
 
 def compress_image():
     # Prompt the user for the input image file
@@ -303,6 +340,8 @@ def compress_image():
     
     try:
         compression_choice = int(input(" Choose compression level (1-3): ").strip())
+        if compression_choice not in [1, 2, 3]:
+             raise ValueError
     except ValueError:
         print(" Invalid input! Using medium compression by default.")
         compression_choice = 2
@@ -552,6 +591,11 @@ if __name__ == "__main__":
 
             # Remove surrounding quotes from input directory path
             input_directory = input_directory.strip('"')
+            
+            if not os.path.isdir(input_directory):
+                print(" Invalid directory path!")
+                input("\n Press enter to continue...")
+                continue
 
             # Choose compression level
             print("\n Select compression level:")
@@ -601,6 +645,11 @@ if __name__ == "__main__":
 
             # Remove surrounding quotes from input directory path
             input_directory = input_directory.strip('"')
+            
+            if not os.path.isdir(input_directory):
+                print(" Invalid directory path!")
+                input("\n Press enter to continue...")
+                continue
 
             # Choose compression level
             print("\n Select compression level:")
@@ -643,14 +692,18 @@ if __name__ == "__main__":
             try:
                 record_screen()
             except:
-                # When you stop the video recording using ctrl + c
+                pass
+            
+            if os.path.exists("output_dir.txt"):
                 with open("output_dir.txt", 'r') as file:
                     output_directory = file.read()
-                print(" Screen recording completed.")
-                print(f" Duration: {(time.time() - start_time):.2f} seconds")
-                os.system(f"explorer {output_directory}")
-                input("\n Press enter to continue...")
-                continue   
+                if output_directory and os.path.isdir(output_directory):
+                    print(" Screen recording completed.")
+                    print(f" Duration: {(time.time() - start_time):.2f} seconds")
+                    os.system(f"explorer {output_directory}")
+                
+            input("\n Press enter to continue...")
+            continue   
             
         elif choice == 6:
             output_path = input(" Enter output path for screen recording: ").strip()
@@ -666,7 +719,7 @@ if __name__ == "__main__":
             extract_audio()
             
         elif choice == 8:
-            input_path = input(" File/Direcotry Path: ").strip()
+            input_path = input(" File/Directory Path: ").strip()
             
             extension = input(" Extension to convert: ").lower().strip().strip(".")
            
@@ -693,7 +746,7 @@ if __name__ == "__main__":
             print(f" Time Taken: {(time.time() - start_time):.2f} seconds")  
               
         elif choice == 9:
-            input_path = input(" File/Direcotry Path: ").strip()
+            input_path = input(" File/Directory Path: ").strip()
             
             extension = input(" Extension to convert: ").lower().strip().strip(".")
             if extension not in image_extensions:
