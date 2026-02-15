@@ -544,6 +544,45 @@ def audio_converter(input_path, extension, single):
     print("\n Conversion successful. Output file:", output_path)
 
         
+def trim_media():
+    # Prompt for input file
+    input_path = input(" Enter the path to the input file: ").strip().strip('"')
+    
+    if not os.path.exists(input_path):
+        print(" The specified file does not exist.")
+        return
+
+    # Get file details
+    input_dir, input_name = os.path.split(input_path)
+    filename, ext = os.path.splitext(input_name)
+    
+    print("\n Enter time in format HH:MM:SS or seconds (e.g., 00:01:30 or 90)")
+    start_time = input(" Start Time (default 00:00:00): ").strip()
+    if not start_time:
+        start_time = "00:00:00"
+        
+    end_time = input(" End Time (leave empty to keep rest): ").strip()
+    
+    output_name = f"{filename}_trimmed{ext}"
+    output_path = os.path.join(input_dir, output_name)
+    
+    cmd = ["ffmpeg.exe", "-i", input_path, "-ss", start_time]
+    
+    if end_time:
+        cmd.extend(["-to", end_time])
+        
+    # Use copy codec for fast trimming without re-encoding
+    cmd.extend(["-c", "copy", "-y", output_path])
+    
+    start_time_proc = time.time()
+    try:
+        subprocess.run(cmd, check=True)
+        print(f"\n Trimming successful. Output file: {output_path}")
+        print(f" Time Taken: {(time.time() - start_time_proc):.2f} seconds")
+    except subprocess.CalledProcessError:
+        print(" Trimming failed. Check your time format.")
+        return
+
 if __name__ == "__main__":
     audio_extensions = (
         'aac', 'ac3', 'aif', 'aiff', 'alac', 'amr', 'ape', 'au', 'awb', 'flac', 'gsm', 'm4a',
@@ -572,7 +611,8 @@ if __name__ == "__main__":
         print(" [7] Extract Audio from Video")
         print(" [8] Convert Audio to any format")
         print(" [9] Convert Image into any format")
-        print(" [10] Exit")
+        print(" [10] Trim Audio/Video")
+        print(" [11] Exit")
         try:
             choice = int(input("\n >> "))
         except:
@@ -773,6 +813,9 @@ if __name__ == "__main__":
             print(f" Time Taken: {(time.time() - start_time):.2f} seconds")    
 
         elif choice == 10:
+            trim_media()
+            
+        elif choice == 11:
             exit()
             
         else:
