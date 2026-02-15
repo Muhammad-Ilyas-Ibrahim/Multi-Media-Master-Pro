@@ -33,6 +33,9 @@ Convert audio files from one format to another, supporting various formats like 
 ### [9] Convert Image into Any Format
 Convert image files from one format to another, supporting formats like JPG, PNG, BMP, GIF, WEBP, etc. You can convert single files or entire directories. Processing time is displayed after conversion.
 
+### [10] Trim Audio/Video
+Trim audio or video files by specifying start and end times. This feature uses fast processing techniques to extract segments without re-encoding (where possible), preserving original quality.
+
 
 ## Installation
 
@@ -209,6 +212,17 @@ Convert image files from one format to another, supporting formats like JPG, PNG
    **Use Case:**
    Great for users who need to convert images for specific needs, such as web use, printing, or sharing.
 
+   #### **[10] Trim Audio/Video**
+
+   1. **Select the Option:** Choose the option `[10] Trim Audio/Video` from the menu.
+   2. **Input File Path:** Enter the full path of the audio or video file.
+   3. **Set Start Time:** Enter the start time (e.g., `00:01:30` or `90` seconds). Default is `00:00:00`.
+   4. **Set End Time:** Enter the end time. Leave empty to keep the rest of the media.
+   5. **Run Trimming:** The script will extract the segment and save it as `_trimmed`.
+
+   **Use Case:**
+   Perfect for creating clips, removing unwanted intros/outros, or shortening content for social media.
+
 ---
 
 ## Enhanced User Experience Features
@@ -234,6 +248,12 @@ This CSV file makes it easy to analyze compression results across multiple files
 
 ### Automatic Folder Opening
 After operations complete, the tool automatically opens the output folder in Windows Explorer (unless the output is on the Desktop), making it easy to access your processed files immediately.
+
+### Robust Logging & Error Handling
+The application now features a comprehensive logging system. All activities and errors are recorded in `app_debug.log` (created in the same directory), helping you troubleshoot issues. The tool is also protected against unexpected crashes, ensuring a smooth user experience even when errors occur.
+
+### Smart FFmpeg Detection
+No need for complex PATH configurations. The tool intelligently locates `ffmpeg.exe` whether it's in the system PATH, the current directory, or bundled within the application (PyInstaller compatibility), ensuring seamless execution.
 
 ### Compression Level Options
 Both video and image compression offer three levels:
